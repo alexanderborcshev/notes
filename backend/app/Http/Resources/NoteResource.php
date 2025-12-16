@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use DateTimeInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,7 +19,7 @@ class NoteResource extends JsonResource
             'id' => $this->id(),
             'title' => (string) $this->title(),
             'description' => (string) $this->description(),
-            'date' => $this->createdAt()->format('d.m.Y H:i'),
+            'date' => $this->createdAt()->format(DateTimeInterface::ATOM),
         ];
     }
 }
