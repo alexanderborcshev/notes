@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\Note;
+use App\Infrastructure\Notes\Eloquent\Note;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
