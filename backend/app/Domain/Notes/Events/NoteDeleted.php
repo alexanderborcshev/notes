@@ -1,0 +1,14 @@
+<?php
+namespace App\Domain\Notes\Events;
+
+use App\Domain\Notes\Entities\Note;
+
+final class NoteDeleted
+{
+    public Note $note;
+
+    public function __construct(Note $note)
+    {
+        $this->note = $note;
+    }
+}

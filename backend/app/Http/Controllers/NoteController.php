@@ -1,39 +1,61 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Application\Notes\CommandHandlers\UpdateNoteHandler;
+use App\Application\Notes\CommandHandlers\CreateNoteHandler;
+use App\Application\Notes\Commands\CreateNoteCommand;
+use App\Application\Notes\Commands\UpdateNoteCommand;
+use App\Application\Notes\Services\NoteService;
 use App\Http\Requests\StoreNoteRequest;
 use App\Http\Requests\UpdateNoteRequest;
 use App\Http\Resources\NoteResource;
-use App\Models\Note;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class NoteController extends Controller
 {
-    public function __construct()
-    {
-        NoteResource::withoutWrapping();
-    }
+    public function __construct(
+        private readonly NoteService $service,
+        private readonly CreateNoteHandler $createHandler,
+        private readonly UpdateNoteHandler $updateHandler
+    ) {}
+
     public function index(): JsonResponse
     {
-        return NoteResource::collection(Note::all())->response();
+        $notes = $this->service->all();
+        NoteResource::withoutWrapping();
+        return NoteResource::collection($notes)->response();
     }
 
     public function store(StoreNoteRequest $request): NoteResource
     {
-        $note = Note::create($request->validated());
+        $command = new CreateNoteCommand(
+            $request->validated()['title'],
+            $request->validated()['description']
+        );
+        $note = $this->createHandler->handle($command);
+
+        NoteResource::withoutWrapping();
         return new NoteResource($note);
     }
 
-    public function update(UpdateNoteRequest $request, Note $note): NoteResource
+    public function update(UpdateNoteRequest $request, $id): NoteResource
     {
-        $note->update($request->validated());
+        $command = new UpdateNoteCommand(
+            $id,
+            $request->validated()['title'],
+            $request->validated()['description']
+        );
 
+        $note = $this->updateHandler->handle($command);
+
+        NoteResource::withoutWrapping();
         return new NoteResource($note);
     }
 
-    public function destroy(Note $note)
+    public function destroy($id): Response
     {
-        $note->delete();
+        $this->service->delete($this->service->find($id));
+        return response()->noContent();
     }
 }
