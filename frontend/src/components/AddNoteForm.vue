@@ -46,9 +46,9 @@
                         id="noteContent"
                         class="form-control"
                         rows="4"
-                        :class="{'is-invalid': contentTouched && !isContentValid}"
+                        :class="{'is-invalid': descriptionTouched && !isDescriptionValid}"
                         v-model="description"
-                        @blur="contentTouched = true"
+                        @blur="descriptionTouched = true"
                         required
                     ></textarea>
                     <div class="invalid-feedback">
@@ -81,20 +81,20 @@ const store = useNotesStore();
 const title = ref('');
 const description = ref('');
 const titleTouched = ref(false);
-const contentTouched = ref(false);
+const descriptionTouched = ref(false);
 
 const loading = ref(false);
 const error = ref<string | null>(null);
 const successMessage = ref<string | null>(null);
 
 const isTitleValid = computed(() => title.value.trim().length >= 3);
-const isContentValid = computed(() => description.value.trim().length >= 5);
-const isFormValid = computed(() => isTitleValid.value && isContentValid.value);
+const isDescriptionValid = computed(() => description.value.trim().length >= 5);
+const isFormValid = computed(() => isTitleValid.value && isDescriptionValid.value);
 
 async function submitForm() {
     if (!isFormValid.value) {
         titleTouched.value = true;
-        contentTouched.value = true;
+        descriptionTouched.value = true;
         return;
     }
 
@@ -112,7 +112,7 @@ async function submitForm() {
         title.value = '';
         description.value = '';
         titleTouched.value = false;
-        contentTouched.value = false;
+        descriptionTouched.value = false;
 
         setTimeout(() => (successMessage.value = null), 3000);
     } catch (e: unknown) {

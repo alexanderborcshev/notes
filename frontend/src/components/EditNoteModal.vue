@@ -39,7 +39,7 @@
                                 v-model="description"
                                 rows="4"
                                 class="form-control"
-                                :class="{ 'is-invalid': contentTouched && !isContentValid }"
+                                :class="{ 'is-invalid': descriptionTouched && !isDescriptionValid }"
                                 required
                             ></textarea>
                             <div class="invalid-feedback">
@@ -89,13 +89,13 @@ const store = useNotesStore();
 const title = ref('');
 const description = ref('');
 const titleTouched = ref(false);
-const contentTouched = ref(false);
+const descriptionTouched = ref(false);
 const loading = ref(false);
 const error = ref<string | null>(null);
 
 const isTitleValid = computed(() => title.value.trim().length >= 3);
-const isContentValid = computed(() => description.value.trim().length >= 5);
-const isFormValid = computed(() => isTitleValid.value && isContentValid.value);
+const isDescriptionValid = computed(() => description.value.trim().length >= 5);
+const isFormValid = computed(() => isTitleValid.value && isDescriptionValid.value);
 
 watch(
     () => props.note,
@@ -104,7 +104,7 @@ watch(
             title.value = newNote.title;
             description.value = newNote.description;
             titleTouched.value = false;
-            contentTouched.value = false;
+            descriptionTouched.value = false;
             error.value = null;
         }
     },
@@ -114,7 +114,7 @@ watch(
 async function submit() {
     if (!isFormValid.value) {
         titleTouched.value = true;
-        contentTouched.value = true;
+        descriptionTouched.value = true;
         return;
     }
 
