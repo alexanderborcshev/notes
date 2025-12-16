@@ -20,8 +20,7 @@ final readonly class NoteService
             createdAt: new DateTimeImmutable(),
             updatedAt: new DateTimeImmutable()
         );
-        $this->repository->save($note);
-        return $note;
+        return $this->repository->save($note);
     }
 
     public function update(Note $note, Title $title, Description $description): Note

@@ -25,12 +25,16 @@ final class EloquentNoteRepository implements NoteRepositoryInterface
         return $e ? $this->toDomain($e) : null;
     }
 
-    public function save(Note $note): void
+    /**
+     * @throws DateMalformedStringException
+     */
+    public function save(Note $note): ?Note
     {
         $e = EloquentNote::find($note->id()) ?? new EloquentNote();
         $e->title   = (string) $note->title();
         $e->description = (string) $note->description();
         $e->save();
+        return $e ? $this->toDomain($e) : null;
     }
 
     public function delete(Note $note): void

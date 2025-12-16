@@ -10,7 +10,7 @@ interface NoteRepositoryInterface
 
     public function find(int $id): ?Note;
 
-    public function save(Note $note): void;
+    public function save(Note $note): ?Note;
 
     public function delete(Note $note): void;
 }
