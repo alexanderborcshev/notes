@@ -55,6 +55,10 @@ class NoteController extends Controller
 
     public function destroy($id): Response
     {
+        $note = $this->service->find($id);
+        if ($note === null) {
+            return response()->noContent()->setStatusCode(404);
+        }
         $this->service->delete($this->service->find($id));
         return response()->noContent();
     }

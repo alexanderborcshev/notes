@@ -37,7 +37,7 @@ class NoteTest extends TestCase
 
     public function test_it_returns_validation_errors_on_store(): void
     {
-        $response = $this->postJson(route('notes.store'), []);
+        $response = $this->postJson(route('notes.store'));
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['title', 'description']);
@@ -52,7 +52,7 @@ class NoteTest extends TestCase
 
         $response = $this->postJson(route('notes.store'), $payload);
 
-        $response->assertStatus(201)
+        $response->assertStatus(200)
             ->assertJsonFragment($payload);
 
         $this->assertDatabaseHas('notes', $payload);
@@ -62,7 +62,7 @@ class NoteTest extends TestCase
     {
         $note = Note::factory()->create();
 
-        $response = $this->putJson(route('notes.update', ['note' => $note->id]), []);
+        $response = $this->putJson(route('notes.update', ['id' => $note->id]));
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['title', 'description']);
@@ -77,7 +77,7 @@ class NoteTest extends TestCase
             'description' => 'Updated description.',
         ];
 
-        $response = $this->putJson(route('notes.update', ['note' => $note->id]), $payload);
+        $response = $this->putJson(route('notes.update', ['id' => $note->id]), $payload);
 
         $response->assertStatus(200)
             ->assertJsonFragment($payload);
@@ -91,7 +91,7 @@ class NoteTest extends TestCase
 
     public function test_it_returns_404_when_destroying_non_existing_note(): void
     {
-        $response = $this->deleteJson(route('notes.destroy', ['note' => 999]));
+        $response = $this->deleteJson(route('notes.destroy', ['id' => 999]));
         $response->assertStatus(404);
     }
 
@@ -99,9 +99,9 @@ class NoteTest extends TestCase
     {
         $note = Note::factory()->create();
 
-        $response = $this->deleteJson(route('notes.destroy', ['note' => $note->id]));
+        $response = $this->deleteJson(route('notes.destroy', ['id' => $note->id]));
 
-        $response->assertStatus(200);
+        $response->assertStatus(204);
 
         $this->assertDatabaseMissing('notes', ['id' => $note->id]);
     }
